@@ -88,38 +88,35 @@ This creates `.planning/` inside the app folder, keeping each project's planning
 /Charlieautomates                # WORKSPACE ROOT
 │
 ├── .claude/                     # Claude Code configuration (workspace-wide)
-│   ├── CLAUDE.md                # Project instructions (this file)
+│   ├── claude.md                # Project instructions (this file)
 │   ├── settings.local.json      # Local Claude settings
 │   └── commands/                # Custom slash commands (skills)
 │       ├── analyze-video.md
-│       ├── content-strategy.md
 │       ├── app-builder-pro.md
-│       ├── thumbnail-packager.md
+│       ├── content-strategy.md
 │       ├── create-agent.md
-│       └── rtc.md
+│       ├── rtc.md
+│       └── thumbnail-packager.md
 │
 ├── agents/                      # Agent frameworks & templates (shared)
 │   ├── agent-framework-template.md
 │   ├── agent-framework-guide.md
 │   └── README.md
 │
-├── apps/                        # 🎯 ALL NEW PROJECTS GO HERE
-│   ├── twincast/                # Example app with its own .planning/
-│   │   ├── .planning/
-│   │   │   ├── PROJECT.md
-│   │   │   ├── ROADMAP.md
-│   │   │   └── STATE.md
-│   │   └── [app code]
-│   ├── reel-recon/
-│   └── [other apps]/
+├── apps/                        # ALL NEW PROJECTS GO HERE
+│   ├── twin-cast/               # AI avatar video generation app
+│   ├── cc-strategic-site/       # Company website
+│   └── [future apps]/
 │
 ├── content/                     # Content strategy & scripts (shared)
 │   ├── claude-code-short-ideas.md
 │   └── scripts/
+│       └── claude-code-vs-chatgpt.md
 │
-├── docker-compose.yml
+├── .gitignore                   # Git ignore rules
+├── docker-compose.yml           # Local services
 ├── run-n8n-mcp.sh               # Runs n8n MCP via Docker image
-└── .env
+└── .env                         # Secrets (gitignored)
 ```
 
 ---
