@@ -75,7 +75,7 @@ class PersonalAGI:
             return None
 
     def _default_system_prompt(self) -> str:
-        return """You are a personal AGI assistant. Your job is to:
+        base_prompt = """You are a personal AGI assistant. Your job is to:
 1. Complete tasks autonomously when possible
 2. Ask clarifying questions when needed
 3. Report back on task completion
@@ -83,6 +83,19 @@ class PersonalAGI:
 
 You have access to tools for reading files, running commands, and searching.
 Use them to accomplish tasks efficiently."""
+
+        if self._google_enabled:
+            google_capabilities = """
+
+You also have access to Google Workspace tools:
+- Gmail: Search and read emails, send emails on the user's behalf
+- Calendar: View and create calendar events, check availability
+- Drive: Search and read files, access shared documents
+
+Use these tools to help manage the user's digital life efficiently."""
+            return base_prompt + google_capabilities
+
+        return base_prompt
 
     def _get_options(self) -> ClaudeAgentOptions:
         """Configure agent options with appropriate tools and permissions."""
