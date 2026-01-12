@@ -1,4 +1,6 @@
 // Prisma config for Supabase connection
+// CLI operations (migrations, introspection) use DIRECT_URL for non-pooled connection
+// Runtime Prisma Client uses DATABASE_URL (pooled) from environment
 import "dotenv/config";
 import { defineConfig } from "prisma/config";
 
@@ -8,7 +10,8 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: process.env["DATABASE_URL"],
-    directUrl: process.env["DIRECT_URL"],
+    // Use direct connection for CLI operations (migrations)
+    // Prisma Client will use DATABASE_URL at runtime
+    url: process.env["DIRECT_URL"] || process.env["DATABASE_URL"],
   },
 });
