@@ -67,20 +67,18 @@ Everything built here should:
 ### Key Rules
 - **New apps/projects go in `/apps/[project-name]/`** — always
 - **Each app has its own `.planning/` folder** for GSD artifacts (PROJECT.md, ROADMAP.md, etc.)
-- **Never run `/gsd:new-project` at the workspace root** — cd into the app folder first
+- **`/gsd:new-project` auto-detects workspace roots** — it will prompt for app name and create the folder automatically
 - **Shared resources** (agents, content) live at workspace root
 
 ### When Starting a New Project
-```bash
-# 1. Create the app folder
-mkdir -p apps/my-new-app
-cd apps/my-new-app
 
-# 2. Initialize with GSD
-/gsd:new-project
-```
+Just run `/gsd:new-project` from anywhere in the workspace. If you're at the workspace root (has `apps/` folder), it will:
+1. Detect the workspace pattern automatically
+2. Ask you for the new app name
+3. Create `apps/[name]/` and cd into it
+4. Initialize `.planning/` inside the app folder
 
-This creates `.planning/` inside the app folder, keeping each project's planning artifacts isolated.
+This keeps each project's planning artifacts isolated without manual folder creation.
 
 ### Directory Layout
 
@@ -104,14 +102,30 @@ This creates `.planning/` inside the app folder, keeping each project's planning
 │   └── README.md
 │
 ├── apps/                        # ALL NEW PROJECTS GO HERE
-│   ├── twin-cast/               # AI avatar video generation app
-│   ├── cc-strategic-site/       # Company website
+│   ├── personal-agi/            # Personal AGI assistant (active)
+│   │   └── .planning/           # GSD artifacts for this project
+│   │       ├── PROJECT.md
+│   │       ├── ROADMAP.md
+│   │       ├── STATE.md
+│   │       └── phases/          # Phase-specific plans
 │   └── [future apps]/
 │
 ├── content/                     # Content strategy & scripts (shared)
 │   ├── claude-code-short-ideas.md
 │   └── scripts/
-│       └── claude-code-vs-chatgpt.md
+│       ├── done/                # Completed scripts
+│       │   ├── gsd-plugin-short.md
+│       │   └── personal-agi-short.md
+│       └── not-done/            # Scripts in progress
+│           └── claude-workspace-short.md
+│
+├── shared/                      # Shared resources (synced repo)
+│   ├── README.md
+│   ├── charlie/                 # Charlie-specific resources
+│   └── courses/                 # Course content
+│       ├── claude-code/
+│       │   └── COURSE-OUTLINE.md
+│       └── n8n/
 │
 ├── .gitignore                   # Git ignore rules
 ├── docker-compose.yml           # Local services
@@ -144,13 +158,8 @@ npx get-shit-done-cc --global
 ```
 Location: `~/.claude/commands/gsd/` and `~/.claude/get-shit-done/`
 
-### ⚠️ Workspace Rule for GSD
-**Always cd into the app folder before running GSD commands:**
-```bash
-cd apps/my-app-name
-/gsd:new-project
-```
-This ensures `.planning/` is created inside the app, not at workspace root.
+### Workspace-Aware GSD
+`/gsd:new-project` automatically detects when you're at a workspace root and prompts for the app name. No need to manually create folders or cd first — just run the command and it handles the rest.
 
 ### Core Workflow
 1. `/gsd:new-project` — Extract requirements through guided questioning → PROJECT.md

@@ -1,102 +1,37 @@
-# Claude Code Content Ideas
+# Claude Code Short Ideas
 
-## MCP Integration Videos
-
-### Claude + GoHighLevel MCP
-- "Claude just became my GHL assistant"
-- Control GHL from Claude Code - manage contacts, pipelines, conversations
-- Auto-respond to GHL conversations using Claude's brain
-- Build GHL workflows with natural language
-
-### Claude + Airtable MCP
-- "Claude reads my entire business database"
-- Query, update, create records with conversation
-- Build dashboards/reports on command
-
-### Claude + Twilio MCP
-- "Claude answers my business calls now"
-- SMS automation controlled by Claude
-- Voice + AI integration demo
-
-### Claude + Stripe MCP
-- "Claude tracks my revenue for me"
-- Pull payment data, analyze trends
-- Automate invoice follow-ups
-
-### Claude + Calendar MCP (Google/Cal.com)
-- "Claude books my meetings now"
-- Scheduling automation
-- "Check my availability and book it"
+Ideas extracted from top-performing transcripts.
 
 ---
 
-## Build Videos
+## Idea 1: Personal AGI To-Do List
 
-### "Claude built my agency's entire tech stack"
-- CRM + website + automation in one session
-- Show the full workflow
+**Hook:** "It's insane how many people even in the AI space don't see how close Claude Code is coming to being your own little personal AGI"
 
-### "I let Claude redesign my client's funnel"
-- Analyze → critique → rebuild
-- Before/after comparison
+**Contrast:**
+- A (Common): Most people use a to-do list and manually check things off
+- B (Reality): To-do list synced to Claude Code that completes tasks autonomously and texts you when done
 
-### "Claude as my dev team"
-- Take a client request → build it live
-- No code, just conversation
+**Technical Setup:**
+- Claude Agents SDK running 24/7
+- Telegram MCP for text communication
+- MCPs: GitHub, Notion, Google Drive, Calendar, Email, Social Media, Skool
 
----
+**Key Visual:** Phone notification showing task completed / to-do items checking themselves off
 
-## Skill/Framework Videos
+**Proof Points:**
+- Morning news summaries from social feeds
+- Calendar briefing
+- Next tasks prioritized
+- Tasks completed without human intervention
 
-### Custom Claude Skills
-- "I taught Claude my sales process"
-- Build a custom skill, show it working
-- Agency-specific frameworks
-
-### CLAUDE.md Deep Dive
-- "The file that runs my business"
-- Show your actual setup
-- How to make Claude understand YOUR context
-
----
-
-## Shorts - Quick Hits
-
-### "Claude can see now" (Playwright)
-- Browser automation demo
-- 15-30 seconds of magic
-
-### "One MCP changed everything"
-- Pick one, show the transformation
-- Before/after workflow
-
-### "Stop building in ChatGPT"
-- Quick comparison
-- Why Claude Code > copy-paste
-
-### "Claude stalked my competitor"
-- Analyze competitor site
-- Pull insights automatically
+**Pattern Used:**
+1. Bold FOMO claim ("even AI people don't see...")
+2. Personal proof ("for me, I literally...")
+3. Common behavior contrast
+4. Technical reveal
+5. Lifestyle result
+6. CTA
 
 ---
 
-## Contrarian/Spicy Takes
-
-### "AI agents are overhyped. Except this one."
-- Claude Code as the real deal
-- Why it's different
-
-### "I fired my VA. Here's what replaced them."
-- Claude + MCPs as virtual assistant
-- Actual tasks it handles
-
-### "Your AI tool is a toy. This is infrastructure."
-- Claude Code vs ChatGPT/other tools
-- For real business use
-
----
-
-## Next Up Priority
-1. GHL MCP connection (if exists or can build)
-2. Playwright site stalker short (DONE - filming)
-3. CLAUDE.md setup video
