@@ -23,6 +23,33 @@ AI-powered case intake and triage for law firms.
 
 5. Open [http://localhost:3000](http://localhost:3000)
 
+## Supabase Storage Setup
+
+Before document uploads will work, you need to configure Supabase Storage:
+
+1. **Create Storage Bucket**
+   - Go to your Supabase project dashboard
+   - Navigate to Storage
+   - Click "New bucket"
+   - Name it `case-documents`
+   - Set to **Private** (not public)
+
+2. **Configure RLS Policy**
+   - Click on the `case-documents` bucket
+   - Go to Policies tab
+   - Add a new policy for INSERT:
+     ```sql
+     CREATE POLICY "Allow public uploads"
+     ON storage.objects
+     FOR INSERT
+     WITH CHECK (bucket_id = 'case-documents');
+     ```
+   - Note: This allows public uploads for MVP. Authentication will be added in Phase 4.
+
+3. **File Path Convention**
+   - Files are stored as: `{firmId}/{caseId}/{filename}`
+   - Example: `firm_abc123/case_xyz789/divorce-petition.pdf`
+
 ## Deployment
 
 This app deploys to Vercel.
