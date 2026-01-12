@@ -2,6 +2,12 @@
   "name": "legal-intake",
   "version": "0.1.0",
   "private": true,
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@prisma/engines",
+      "prisma"
+    ]
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,7 +15,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@prisma/client": "^7.2.0",
     "next": "16.1.1",
+    "prisma": "^7.2.0",
     "react": "19.2.3",
     "react-dom": "19.2.3"
   },
@@ -18,6 +26,7 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.3",
     "eslint": "^9",
     "eslint-config-next": "16.1.1",
     "tailwindcss": "^4",
