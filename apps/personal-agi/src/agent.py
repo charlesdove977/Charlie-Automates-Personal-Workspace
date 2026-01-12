@@ -1,20 +1,78 @@
 """Core agent wrapper using ClaudeSDKClient for persistent sessions."""
 import asyncio
+import json
+import os
+import re
+from pathlib import Path
+
 import anyio
 import structlog
 from claude_agent_sdk import ClaudeSDKClient, ClaudeAgentOptions
 from claude_agent_sdk.types import AssistantMessage, ResultMessage, TextBlock
 
+from .config import validate_google_config
+
 log = structlog.get_logger()
+
+# Project root for loading .mcp.json
+PROJECT_ROOT = Path(__file__).parent.parent
 
 
 class PersonalAGI:
     """Personal AGI agent with persistent session management."""
 
     def __init__(self, system_prompt: str | None = None):
+        self._google_enabled = validate_google_config()
         self.system_prompt = system_prompt or self._default_system_prompt()
         self.client: ClaudeSDKClient | None = None
         self.running = False
+
+    @property
+    def google_enabled(self) -> bool:
+        """Check if Google Workspace integration is enabled."""
+        return self._google_enabled
+
+    def _substitute_env_vars(self, value: str) -> str:
+        """Substitute ${VAR} patterns with actual environment variable values."""
+        pattern = r'\$\{([^}]+)\}'
+
+        def replace(match):
+            var_name = match.group(1)
+            return os.environ.get(var_name, '')
+
+        return re.sub(pattern, replace, value)
+
+    def _load_mcp_config(self) -> dict | None:
+        """Load MCP configuration from .mcp.json if it exists and Google is configured."""
+        if not self._google_enabled:
+            log.info("google_disabled", reason="credentials_not_configured")
+            return None
+
+        mcp_config_path = PROJECT_ROOT / ".mcp.json"
+        if not mcp_config_path.exists():
+            log.warning("mcp_config_missing", path=str(mcp_config_path))
+            return None
+
+        try:
+            with open(mcp_config_path) as f:
+                config = json.load(f)
+
+            # Substitute environment variables in the config
+            mcp_servers = config.get("mcpServers", {})
+            for server_name, server_config in mcp_servers.items():
+                if "env" in server_config:
+                    for key, value in server_config["env"].items():
+                        server_config["env"][key] = self._substitute_env_vars(value)
+
+            log.info("mcp_config_loaded", servers=list(mcp_servers.keys()))
+            return mcp_servers
+
+        except json.JSONDecodeError as e:
+            log.error("mcp_config_invalid", error=str(e))
+            return None
+        except Exception as e:
+            log.error("mcp_config_error", error=str(e))
+            return None
 
     def _default_system_prompt(self) -> str:
         return """You are a personal AGI assistant. Your job is to:
@@ -28,11 +86,19 @@ Use them to accomplish tasks efficiently."""
 
     def _get_options(self) -> ClaudeAgentOptions:
         """Configure agent options with appropriate tools and permissions."""
-        return ClaudeAgentOptions(
+        options = ClaudeAgentOptions(
             allowed_tools=["Read", "Write", "Bash", "Glob", "Grep"],
             permission_mode="acceptEdits",
             system_prompt=self.system_prompt,
         )
+
+        # Add MCP servers if Google is configured
+        mcp_servers = self._load_mcp_config()
+        if mcp_servers:
+            options.mcpServers = mcp_servers
+            log.info("mcp_servers_configured", count=len(mcp_servers))
+
+        return options
 
     async def start(self) -> None:
         """Start the agent session."""
