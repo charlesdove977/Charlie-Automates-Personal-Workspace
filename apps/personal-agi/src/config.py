@@ -9,6 +9,10 @@ ANTHROPIC_API_KEY = os.getenv("ANTHROPIC_API_KEY")
 TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
 TELEGRAM_OWNER_ID = os.getenv("TELEGRAM_OWNER_ID")
 
+# Google OAuth configuration
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
 
 def validate_config() -> bool:
     """Validate required configuration is present."""
@@ -44,6 +48,21 @@ def validate_telegram_config() -> bool:
         int(TELEGRAM_OWNER_ID)
     except ValueError:
         print("ERROR: TELEGRAM_OWNER_ID must be a number")
+        return False
+
+    return True
+
+
+def validate_google_config() -> bool:
+    """Validate Google OAuth configuration is present."""
+    if not GOOGLE_CLIENT_ID:
+        print("WARNING: GOOGLE_CLIENT_ID not set")
+        print("Google Workspace features will be disabled")
+        return False
+
+    if not GOOGLE_CLIENT_SECRET:
+        print("WARNING: GOOGLE_CLIENT_SECRET not set")
+        print("Google Workspace features will be disabled")
         return False
 
     return True
