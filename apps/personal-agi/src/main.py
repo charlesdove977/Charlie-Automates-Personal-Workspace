@@ -7,7 +7,7 @@ import structlog
 from dotenv import load_dotenv
 
 from src.agent import PersonalAGI
-from src.config import validate_config
+from src.config import validate_config, validate_telegram_config
 
 # Configure structured logging
 structlog.configure(
@@ -34,9 +34,15 @@ log = structlog.get_logger()
 class AgentRunner:
     """Manages agent lifecycle with graceful shutdown."""
 
-    def __init__(self):
+    def __init__(self, use_telegram: bool = True):
         self.agent = PersonalAGI()
+        self.telegram_bot = None
+        self.use_telegram = use_telegram
         self.shutdown_event = asyncio.Event()
+
+        if use_telegram:
+            from src.telegram import TelegramBot
+            self.telegram_bot = TelegramBot(self.agent)
 
     def _setup_signal_handlers(self):
         """Set up signal handlers for graceful shutdown."""
@@ -52,11 +58,15 @@ class AgentRunner:
         """Handle shutdown signal gracefully."""
         log.info("shutdown_signal_received", signal=sig.name)
         self.shutdown_event.set()
+        if self.telegram_bot:
+            await self.telegram_bot.stop()
         await self.agent.stop()
 
     async def run_interactive(self):
         """Run in interactive mode for testing."""
         await self.agent.start()
+        if self.telegram_bot:
+            await self.telegram_bot.start()
         log.info("interactive_mode_started", hint="Type messages, Ctrl+C to exit")
 
         while not self.shutdown_event.is_set():
@@ -80,12 +90,16 @@ class AgentRunner:
             except KeyboardInterrupt:
                 break
 
+        if self.telegram_bot:
+            await self.telegram_bot.stop()
         await self.agent.stop()
 
     async def run_daemon(self):
         """Run in daemon mode (for Supervisor)."""
         self._setup_signal_handlers()
         await self.agent.start()
+        if self.telegram_bot:
+            await self.telegram_bot.start()
         log.info("daemon_mode_started")
 
         # Wait for shutdown signal
@@ -98,12 +112,17 @@ async def main():
     """Main entry point."""
     load_dotenv()
 
-    # Validate configuration
+    # Validate base configuration
     if not validate_config():
         log.error("config_validation_failed")
         sys.exit(1)
 
-    runner = AgentRunner()
+    # Check if Telegram is configured
+    use_telegram = validate_telegram_config()
+    if not use_telegram:
+        log.warning("telegram_not_configured", hint="Running without Telegram")
+
+    runner = AgentRunner(use_telegram=use_telegram)
 
     # Check if running interactively or as daemon
     if sys.stdin.isatty():
