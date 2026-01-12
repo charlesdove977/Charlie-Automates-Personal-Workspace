@@ -41,7 +41,7 @@ Key deliverables:
 **Depends on**: Phase 1
 **Research**: Likely (document upload/storage patterns)
 **Research topics**: File upload handling, secure document storage, form validation, legal disclaimer UI patterns
-**Plans**: TBD
+**Plans**: 4 (02-01 Supabase Storage, 02-02 Intake Form UI, 02-03 Questionnaire & Disclaimer, 02-04 Case Submission API)
 
 Key deliverables:
 - Document upload interface (multi-file)
@@ -118,7 +118,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-12 |
-| 2. Client Intake Interface | 0/TBD | Not started | - |
+| 2. Client Intake Interface | 0/4 | Planned | - |
 | 3. AI Analysis Engine | 0/TBD | Not started | - |
 | 4. Attorney Dashboard | 0/TBD | Not started | - |
 | 5. Firm Configuration | 0/TBD | Not started | - |
