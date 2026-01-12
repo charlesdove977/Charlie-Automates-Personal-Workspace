@@ -1,6 +1,9 @@
 import { notFound } from 'next/navigation'
 import { db } from '@/lib/db'
 
+// Force dynamic rendering - firm data must be fetched at request time
+export const dynamic = 'force-dynamic'
+
 interface FirmLayoutProps {
   children: React.ReactNode
   params: Promise<{ firmSlug: string }>
