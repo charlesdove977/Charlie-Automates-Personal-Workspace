@@ -9,28 +9,29 @@ See: .planning/PROJECT.md (updated 2026-01-12)
 
 ## Current Position
 
-Phase: 1 of 6 (Foundation) - COMPLETE
-Plan: 3 of 3 complete
-Status: Phase 1 complete, ready for Phase 2
-Last activity: 2026-01-12 — Completed 01-03-PLAN.md (API Routes & Vercel Config)
+Phase: 2 of 6 (Client Intake Interface)
+Plan: 1 of 4 complete
+Status: In progress
+Last activity: 2026-01-12 — Completed 02-01-PLAN.md (Supabase Client Setup)
 
-Progress: ██░░░░░░░░ 17%
+Progress: ███░░░░░░░ 24%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 4
 - Average duration: 4 min
-- Total execution time: 11 min
+- Total execution time: 14 min
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 11 min | 4 min |
+| 02-client-intake | 1 | 3 min | 3 min |
 
 **Recent Trend:**
-- Last 5 plans: 01-01 (3 min), 01-02 (5 min), 01-03 (3 min)
+- Last 5 plans: 01-01 (3 min), 01-02 (5 min), 01-03 (3 min), 02-01 (3 min)
 - Trend: Consistent
 
 ## Accumulated Context
@@ -46,6 +47,8 @@ Recent decisions affecting current work:
 | 01-02 | Multi-tenant by firmId | All entities linked to Firm for data isolation |
 | 01-03 | Cache-Control: no-store for API routes | Prevent stale data in API responses |
 | 01-03 | iad1 Vercel region | US-East deployment for typical law firm users |
+| 02-01 | @supabase/ssr (not auth-helpers) | Modern SSR package for Next.js 14+ |
+| 02-01 | Storage path: {firmId}/{caseId}/{filename} | Multi-tenant file organization |
 
 ### Deferred Issues
 
@@ -58,5 +61,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-12
-Stopped at: Completed 01-03-PLAN.md (Phase 1 complete)
+Stopped at: Completed 02-01-PLAN.md (1 of 4 in Phase 2)
 Resume file: None
