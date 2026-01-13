@@ -21,6 +21,7 @@ export function getOpenAIClient(): OpenAI {
 
   const client = new OpenAI({
     apiKey,
+    organization: process.env.OPENAI_ORG_ID,
   })
 
   if (process.env.NODE_ENV !== 'production') {

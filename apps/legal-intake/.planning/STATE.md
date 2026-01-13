@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-12)
 
 **Core value:** Attorneys can make informed accept/reject decisions on cases in under 2 minutes without reading raw documents or taking free consults that go nowhere.
-**Current focus:** Phase 4 — Attorney Dashboard (up next)
+**Current focus:** Phase 4 — Attorney Dashboard (COMPLETE)
 
 ## Current Position
 
-Phase: 4 of 6 (Attorney Dashboard) — **In progress**
-Plan: 3 of 4 complete
-Status: Ready to execute 04-04-PLAN.md
-Last activity: 2026-01-13 — Completed 04-03-PLAN.md (Case Brief Viewer)
+Phase: 4 of 6 (Attorney Dashboard) — **COMPLETE**
+Plan: 4 of 4 complete
+Status: Phase 4 finished, ready for Phase 5
+Last activity: 2026-01-13 — Completed 04-04-PLAN.md (Accept/Reject Actions)
 
-Progress: █████████████ 85%
+Progress: █████████████████ 100% (Phase 4)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 12
-- Average duration: 14 min
-- Total execution time: 162 min
+- Total plans completed: 13
+- Average duration: 13 min
+- Total execution time: 174 min
 
 **By Phase:**
 
@@ -30,11 +30,11 @@ Progress: █████████████ 85%
 | 01-foundation | 3 | 11 min | 4 min |
 | 02-client-intake | 4 | 74 min | 19 min |
 | 03-ai-analysis | 3 | 57 min | 19 min |
-| 04-attorney-dashboard | 2 | 20 min | 10 min |
+| 04-attorney-dashboard | 4 | 32 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 03-02 (15 min), 03-03 (20 min), 04-01 (8 min), 04-02 (12 min)
-- Trend: Dashboard UI coming together quickly
+- Last 5 plans: 03-03 (20 min), 04-01 (8 min), 04-02 (12 min), 04-03 (25 min), 04-04 (12 min)
+- Trend: Dashboard UI complete with all core features
 
 ## Accumulated Context
 
@@ -70,18 +70,23 @@ Recent decisions affecting current work:
 | 04-02 | Sidebar + header layout pattern | Professional dashboard shell with firm branding |
 | 04-02 | 5-second polling for processing cases | Balance responsiveness with server load |
 | 04-02 | Fit score color coding (green/yellow/red) | Quick visual assessment at 70/50 thresholds |
+| 04-04 | Template-based rejection response | No AI needed for MVP; professional and empathetic |
+| 04-04 | Reusable ConfirmDialog component | Modal pattern for all confirmation actions |
 
 ### Deferred Issues
 
-None yet.
+| Issue | Reason | Revisit |
+|-------|--------|---------|
+| Email sending on reject | Out of MVP scope | Phase 5 |
+| Calendar booking on accept | Out of MVP scope | Phase 5+ |
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Session Continuity
 
 Last session: 2026-01-13
-Stopped at: Completed 04-03-PLAN.md (Case Brief Viewer)
+Stopped at: Completed 04-04-PLAN.md (Accept/Reject Actions)
 Resume file: None
-Next: Execute 04-04-PLAN.md (Accept/Reject Actions)
+Next: Plan Phase 5 (Notifications & Email Integration) or deploy MVP

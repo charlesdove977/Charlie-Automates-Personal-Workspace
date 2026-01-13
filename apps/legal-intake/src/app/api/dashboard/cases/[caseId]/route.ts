@@ -61,6 +61,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     processingError: caseData.processingError,
     submittedAt: caseData.submittedAt.toISOString(),
     processedAt: caseData.processedAt?.toISOString() ?? null,
+    reviewedAt: caseData.reviewedAt?.toISOString() ?? null,
     brief,
     documents: caseData.documents,
   }

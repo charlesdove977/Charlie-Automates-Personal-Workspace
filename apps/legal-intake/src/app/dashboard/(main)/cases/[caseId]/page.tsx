@@ -8,6 +8,7 @@ import type { CaseBrief } from '@/types/case-brief'
 import { ProcessingBadge } from '@/components/dashboard/ProcessingBadge'
 import { BriefDisplay } from '@/components/brief/BriefDisplay'
 import { FitScoreCard } from '@/components/brief/FitScoreCard'
+import { ActionButtons } from '@/components/brief/ActionButtons'
 
 interface CaseDetail {
   id: string
@@ -22,6 +23,7 @@ interface CaseDetail {
   processingError: string | null
   submittedAt: string
   processedAt: string | null
+  reviewedAt: string | null
   brief: CaseBrief | null
   documents: {
     id: string
@@ -182,6 +184,18 @@ export default function CaseDetailPage() {
             </div>
           )}
         </div>
+      </div>
+
+      {/* Action Buttons */}
+      <div className="mb-6">
+        <ActionButtons
+          caseId={caseData.id}
+          status={caseData.status}
+          processingStatus={caseData.processingStatus}
+          clientName={caseData.clientName}
+          clientEmail={caseData.clientEmail}
+          reviewedAt={caseData.reviewedAt}
+        />
       </div>
 
       {/* Content based on processing status */}

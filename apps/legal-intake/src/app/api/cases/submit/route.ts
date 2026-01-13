@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client'
 import { db } from '@/lib/db'
 import { jsonResponse, badRequest, notFound, errorResponse } from '@/lib/api'
 import { uploadDocument, validateFile } from '@/lib/storage'
+import { processCase } from '@/lib/processing'
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -138,16 +139,26 @@ export async function POST(request: Request) {
       }
     }
 
+    // Trigger background processing (fire and forget)
+    // Note: For production serverless, consider using a queue or Vercel background tasks
+    if (uploadedDocuments.length > 0) {
+      processCase(caseRecord.id).catch((error) => {
+        console.error(`[submit] Background processing failed for case ${caseRecord.id}:`, error)
+      })
+    }
+
     // Build response
     const response: {
       caseId: string
       message: string
+      processingStatus: string
       documents?: UploadedDocument[]
       partialUpload?: boolean
       failedUploads?: FailedUpload[]
     } = {
       caseId: caseRecord.id,
       message: 'Case submitted successfully',
+      processingStatus: uploadedDocuments.length > 0 ? 'QUEUED' : 'COMPLETE',
     }
 
     if (uploadedDocuments.length > 0) {

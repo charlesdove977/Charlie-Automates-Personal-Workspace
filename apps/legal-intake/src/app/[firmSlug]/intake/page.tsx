@@ -7,7 +7,7 @@ import { FileDropzone, type SelectedFile } from '@/components/intake/FileDropzon
 import { FileList, type FileWithProgress } from '@/components/intake/FileList'
 import { LegalDisclaimer } from '@/components/intake/LegalDisclaimer'
 
-type Step = 'contact' | 'case' | 'documents' | 'review'
+type Step = 'info' | 'documents' | 'review'
 
 interface FormErrors {
   clientName?: string
@@ -17,10 +17,9 @@ interface FormErrors {
 }
 
 const STEPS: { id: Step; label: string; number: number }[] = [
-  { id: 'contact', label: 'Contact Info', number: 1 },
-  { id: 'case', label: 'Case Details', number: 2 },
-  { id: 'documents', label: 'Documents', number: 3 },
-  { id: 'review', label: 'Review & Submit', number: 4 },
+  { id: 'info', label: 'Your Information', number: 1 },
+  { id: 'documents', label: 'Documents', number: 2 },
+  { id: 'review', label: 'Review & Submit', number: 3 },
 ]
 
 const initialFormData: IntakeFormData = {
@@ -35,7 +34,7 @@ const initialFormData: IntakeFormData = {
 export default function IntakePage() {
   const params = useParams()
   const firmSlug = params.firmSlug as string
-  const [currentStep, setCurrentStep] = useState<Step>('contact')
+  const [currentStep, setCurrentStep] = useState<Step>('info')
   const [formData, setFormData] = useState<IntakeFormData>(initialFormData)
   const [errors, setErrors] = useState<FormErrors>({})
   const [touched, setTouched] = useState<Record<string, boolean>>({})
@@ -140,11 +139,8 @@ export default function IntakePage() {
 
   const goBack = useCallback(() => {
     switch (currentStep) {
-      case 'case':
-        setCurrentStep('contact')
-        break
       case 'documents':
-        setCurrentStep('case')
+        setCurrentStep('info')
         break
       case 'review':
         setCurrentStep('documents')
@@ -154,10 +150,7 @@ export default function IntakePage() {
 
   const goNext = useCallback(() => {
     switch (currentStep) {
-      case 'contact':
-        setCurrentStep('case')
-        break
-      case 'case':
+      case 'info':
         setCurrentStep('documents')
         break
       case 'documents':
@@ -268,11 +261,11 @@ export default function IntakePage() {
 
         {/* Form Content */}
         <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
-          {/* Step 1 & 2: Contact Info and Case Details */}
-          {(currentStep === 'contact' || currentStep === 'case') && (
+          {/* Step 1: Your Information (Contact + Case Details) */}
+          {currentStep === 'info' && (
             <div>
               <h2 className="mb-6 text-xl font-semibold text-zinc-900">
-                {currentStep === 'contact' ? 'Contact Information' : 'Case Details'}
+                Your Information
               </h2>
               <IntakeForm
                 data={formData}
@@ -283,44 +276,20 @@ export default function IntakePage() {
                 disabled={isSubmitting}
               />
 
-              {/* Navigation for Contact step */}
-              {currentStep === 'contact' && (
-                <div className="mt-8 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setCurrentStep('case')}
-                    className="inline-flex items-center justify-center rounded-md px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    style={{ backgroundColor: 'var(--firm-primary, #1a365d)' }}
-                  >
-                    Continue
-                  </button>
-                </div>
-              )}
-
-              {/* Navigation for Case step */}
-              {currentStep === 'case' && (
-                <div className="mt-8 flex justify-between">
-                  <button
-                    type="button"
-                    onClick={goBack}
-                    className="inline-flex items-center justify-center rounded-md border border-zinc-300 bg-white px-6 py-2.5 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2"
-                  >
-                    Back
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleContinueToDocuments}
-                    className="inline-flex items-center justify-center rounded-md px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2"
-                    style={{ backgroundColor: 'var(--firm-primary, #1a365d)' }}
-                  >
-                    Continue
-                  </button>
-                </div>
-              )}
+              <div className="mt-8 flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleContinueToDocuments}
+                  className="inline-flex items-center justify-center rounded-md px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2"
+                  style={{ backgroundColor: 'var(--firm-primary, #1a365d)' }}
+                >
+                  Continue
+                </button>
+              </div>
             </div>
           )}
 
-          {/* Step 3: Documents */}
+          {/* Step 2: Documents */}
           {currentStep === 'documents' && (
             <div>
               <h2 className="mb-2 text-xl font-semibold text-zinc-900">
@@ -364,7 +333,7 @@ export default function IntakePage() {
             </div>
           )}
 
-          {/* Step 4: Review & Submit */}
+          {/* Step 3: Review & Submit */}
           {currentStep === 'review' && formData && (
             <div>
               <h2 className="mb-6 text-xl font-semibold text-zinc-900">
@@ -373,19 +342,19 @@ export default function IntakePage() {
 
               {/* Review Summary */}
               <div className="space-y-6">
-                {/* Contact Info Summary */}
+                {/* Your Information Summary */}
                 <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
                   <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-zinc-900">Contact Information</h3>
+                    <h3 className="font-medium text-zinc-900">Your Information</h3>
                     <button
                       type="button"
-                      onClick={() => goToStep('contact')}
+                      onClick={() => goToStep('info')}
                       className="text-sm text-zinc-600 underline hover:text-zinc-900"
                     >
                       Edit
                     </button>
                   </div>
-                  <dl className="mt-3 space-y-1 text-sm">
+                  <dl className="mt-3 space-y-2 text-sm">
                     <div className="flex">
                       <dt className="w-24 flex-shrink-0 text-zinc-500">Name:</dt>
                       <dd className="text-zinc-900">{formData.clientName}</dd>
@@ -400,24 +369,8 @@ export default function IntakePage() {
                         <dd className="text-zinc-900">{formData.clientPhone}</dd>
                       </div>
                     )}
-                  </dl>
-                </div>
-
-                {/* Case Details Summary */}
-                <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-medium text-zinc-900">Case Details</h3>
-                    <button
-                      type="button"
-                      onClick={() => goToStep('case')}
-                      className="text-sm text-zinc-600 underline hover:text-zinc-900"
-                    >
-                      Edit
-                    </button>
-                  </div>
-                  <dl className="mt-3 space-y-1 text-sm">
                     <div className="flex">
-                      <dt className="w-24 flex-shrink-0 text-zinc-500">Type:</dt>
+                      <dt className="w-24 flex-shrink-0 text-zinc-500">Case Type:</dt>
                       <dd className="text-zinc-900">{formData.caseType}</dd>
                     </div>
                     {formData.jurisdiction && (
