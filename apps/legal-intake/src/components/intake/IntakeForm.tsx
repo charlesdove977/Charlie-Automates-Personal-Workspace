@@ -126,7 +126,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
   }, [formData, validateForm, onSubmit])
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
+    <form id="intake-form" onSubmit={handleSubmit} className="space-y-6" noValidate>
       {/* Contact Information Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-zinc-900">Contact Information</h3>
