@@ -2,12 +2,19 @@
 
 import { useState, useCallback } from 'react'
 import { useParams } from 'next/navigation'
-import { IntakeForm, type IntakeFormData } from '@/components/intake/IntakeForm'
+import { IntakeForm, validateForm, validateField, type IntakeFormData } from '@/components/intake/IntakeForm'
 import { FileDropzone, type SelectedFile } from '@/components/intake/FileDropzone'
 import { FileList, type FileWithProgress } from '@/components/intake/FileList'
 import { LegalDisclaimer } from '@/components/intake/LegalDisclaimer'
 
 type Step = 'contact' | 'case' | 'documents' | 'review'
+
+interface FormErrors {
+  clientName?: string
+  clientEmail?: string
+  caseType?: string
+  briefDescription?: string
+}
 
 const STEPS: { id: Step; label: string; number: number }[] = [
   { id: 'contact', label: 'Contact Info', number: 1 },
@@ -16,21 +23,45 @@ const STEPS: { id: Step; label: string; number: number }[] = [
   { id: 'review', label: 'Review & Submit', number: 4 },
 ]
 
+const initialFormData: IntakeFormData = {
+  clientName: '',
+  clientEmail: '',
+  clientPhone: '',
+  caseType: '',
+  jurisdiction: '',
+  briefDescription: '',
+}
+
 export default function IntakePage() {
   const params = useParams()
   const firmSlug = params.firmSlug as string
   const [currentStep, setCurrentStep] = useState<Step>('contact')
-  const [formData, setFormData] = useState<IntakeFormData | null>(null)
+  const [formData, setFormData] = useState<IntakeFormData>(initialFormData)
+  const [errors, setErrors] = useState<FormErrors>({})
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
   const [files, setFiles] = useState<FileWithProgress[]>([])
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [isSubmitted, setIsSubmitted] = useState(false)
 
-  const handleFormSubmit = useCallback((data: IntakeFormData) => {
+  const handleFormChange = useCallback((data: IntakeFormData) => {
     setFormData(data)
-    setCurrentStep('documents')
-  }, [])
+    // Clear errors for changed fields
+    const changedField = Object.keys(data).find(
+      key => data[key as keyof IntakeFormData] !== formData[key as keyof IntakeFormData]
+    ) as keyof IntakeFormData | undefined
+    if (changedField && touched[changedField]) {
+      const error = validateField(changedField, data[changedField])
+      setErrors(prev => ({ ...prev, [changedField]: error }))
+    }
+  }, [formData, touched])
+
+  const handleFieldBlur = useCallback((field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }))
+    const error = validateField(field as keyof IntakeFormData, formData[field as keyof IntakeFormData])
+    setErrors(prev => ({ ...prev, [field]: error }))
+  }, [formData])
 
   const handleFilesSelected = useCallback((newFiles: SelectedFile[]) => {
     setFiles(prev => [...prev, ...newFiles.map(f => ({ ...f, progress: undefined, uploaded: false }))])
@@ -44,8 +75,25 @@ export default function IntakePage() {
     setDisclaimerAccepted(accepted)
   }, [])
 
+  const handleContinueToDocuments = useCallback(() => {
+    // Mark all fields as touched
+    setTouched({
+      clientName: true,
+      clientEmail: true,
+      caseType: true,
+      briefDescription: true,
+    })
+
+    const validationErrors = validateForm(formData)
+    setErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length === 0) {
+      setCurrentStep('documents')
+    }
+  }, [formData])
+
   const handleFinalSubmit = useCallback(async () => {
-    if (!formData || !disclaimerAccepted) return
+    if (!disclaimerAccepted) return
 
     setIsSubmitting(true)
     setSubmitError(null)
@@ -220,14 +268,18 @@ export default function IntakePage() {
 
         {/* Form Content */}
         <div className="rounded-lg border border-zinc-200 bg-white p-6 shadow-sm sm:p-8">
-          {/* Step 1 & 2: Contact Info and Case Details (combined in IntakeForm) */}
+          {/* Step 1 & 2: Contact Info and Case Details */}
           {(currentStep === 'contact' || currentStep === 'case') && (
             <div>
               <h2 className="mb-6 text-xl font-semibold text-zinc-900">
                 {currentStep === 'contact' ? 'Contact Information' : 'Case Details'}
               </h2>
               <IntakeForm
-                onSubmit={handleFormSubmit}
+                data={formData}
+                onChange={handleFormChange}
+                errors={errors}
+                touched={touched}
+                onBlur={handleFieldBlur}
                 disabled={isSubmitting}
               />
 
@@ -256,8 +308,8 @@ export default function IntakePage() {
                     Back
                   </button>
                   <button
-                    type="submit"
-                    form="intake-form"
+                    type="button"
+                    onClick={handleContinueToDocuments}
                     className="inline-flex items-center justify-center rounded-md px-6 py-2.5 text-sm font-medium text-white transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2"
                     style={{ backgroundColor: 'var(--firm-primary, #1a365d)' }}
                   >

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, type FormEvent, type ChangeEvent } from 'react'
+import { useCallback, type ChangeEvent } from 'react'
 
 const CASE_TYPES = [
   'Divorce',
@@ -29,17 +29,12 @@ interface FormErrors {
 }
 
 interface IntakeFormProps {
-  onSubmit: (data: IntakeFormData) => void
+  data: IntakeFormData
+  onChange: (data: IntakeFormData) => void
+  errors: FormErrors
+  touched: Record<string, boolean>
+  onBlur: (field: string) => void
   disabled?: boolean
-}
-
-const initialFormData: IntakeFormData = {
-  clientName: '',
-  clientEmail: '',
-  clientPhone: '',
-  caseType: '',
-  jurisdiction: '',
-  briefDescription: '',
 }
 
 function validateEmail(email: string): boolean {
@@ -47,86 +42,53 @@ function validateEmail(email: string): boolean {
   return emailRegex.test(email)
 }
 
-export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
-  const [formData, setFormData] = useState<IntakeFormData>(initialFormData)
-  const [errors, setErrors] = useState<FormErrors>({})
-  const [touched, setTouched] = useState<Record<string, boolean>>({})
+export function validateField(name: keyof IntakeFormData, value: string): string | undefined {
+  switch (name) {
+    case 'clientName':
+      if (!value.trim()) return 'Full name is required'
+      if (value.trim().length < 2) return 'Name must be at least 2 characters'
+      return undefined
+    case 'clientEmail':
+      if (!value.trim()) return 'Email address is required'
+      if (!validateEmail(value)) return 'Please enter a valid email address'
+      return undefined
+    case 'caseType':
+      if (!value) return 'Please select a case type'
+      return undefined
+    case 'briefDescription':
+      if (value.length > 1000) return 'Description must be 1000 characters or less'
+      return undefined
+    default:
+      return undefined
+  }
+}
 
-  const validateField = useCallback((name: keyof IntakeFormData, value: string): string | undefined => {
-    switch (name) {
-      case 'clientName':
-        if (!value.trim()) return 'Full name is required'
-        if (value.trim().length < 2) return 'Name must be at least 2 characters'
-        return undefined
-      case 'clientEmail':
-        if (!value.trim()) return 'Email address is required'
-        if (!validateEmail(value)) return 'Please enter a valid email address'
-        return undefined
-      case 'caseType':
-        if (!value) return 'Please select a case type'
-        return undefined
-      case 'briefDescription':
-        if (value.length > 1000) return 'Description must be 1000 characters or less'
-        return undefined
-      default:
-        return undefined
+export function validateForm(data: IntakeFormData): FormErrors {
+  const errors: FormErrors = {}
+  const fieldsToValidate: (keyof IntakeFormData)[] = ['clientName', 'clientEmail', 'caseType', 'briefDescription']
+
+  fieldsToValidate.forEach((field) => {
+    const error = validateField(field, data[field])
+    if (error) {
+      errors[field as keyof FormErrors] = error
     }
-  }, [])
+  })
 
-  const validateForm = useCallback((): FormErrors => {
-    const newErrors: FormErrors = {}
-    const fieldsToValidate: (keyof IntakeFormData)[] = ['clientName', 'clientEmail', 'caseType', 'briefDescription']
+  return errors
+}
 
-    fieldsToValidate.forEach((field) => {
-      const error = validateField(field, formData[field])
-      if (error) {
-        newErrors[field as keyof FormErrors] = error
-      }
-    })
-
-    return newErrors
-  }, [formData, validateField])
-
+export function IntakeForm({ data, onChange, errors, touched, onBlur, disabled = false }: IntakeFormProps) {
   const handleChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
-    setFormData(prev => ({ ...prev, [name]: value }))
-
-    // Clear error when user starts typing
-    if (touched[name]) {
-      const error = validateField(name as keyof IntakeFormData, value)
-      setErrors(prev => ({ ...prev, [name]: error }))
-    }
-  }, [touched, validateField])
+    onChange({ ...data, [name]: value })
+  }, [data, onChange])
 
   const handleBlur = useCallback((e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    const { name, value } = e.target
-    setTouched(prev => ({ ...prev, [name]: true }))
-
-    const error = validateField(name as keyof IntakeFormData, value)
-    setErrors(prev => ({ ...prev, [name]: error }))
-  }, [validateField])
-
-  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-
-    // Mark all fields as touched
-    setTouched({
-      clientName: true,
-      clientEmail: true,
-      caseType: true,
-      briefDescription: true,
-    })
-
-    const validationErrors = validateForm()
-    setErrors(validationErrors)
-
-    if (Object.keys(validationErrors).length === 0) {
-      onSubmit(formData)
-    }
-  }, [formData, validateForm, onSubmit])
+    onBlur(e.target.name)
+  }, [onBlur])
 
   return (
-    <form id="intake-form" onSubmit={handleSubmit} className="space-y-6" noValidate>
+    <div className="space-y-6">
       {/* Contact Information Section */}
       <div className="space-y-4">
         <h3 className="text-lg font-medium text-zinc-900">Contact Information</h3>
@@ -140,7 +102,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
             type="text"
             id="clientName"
             name="clientName"
-            value={formData.clientName}
+            value={data.clientName}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={disabled}
@@ -169,7 +131,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
             type="email"
             id="clientEmail"
             name="clientEmail"
-            value={formData.clientEmail}
+            value={data.clientEmail}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={disabled}
@@ -198,7 +160,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
             type="tel"
             id="clientPhone"
             name="clientPhone"
-            value={formData.clientPhone}
+            value={data.clientPhone}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={disabled}
@@ -222,7 +184,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
           <select
             id="caseType"
             name="caseType"
-            value={formData.caseType}
+            value={data.caseType}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={disabled}
@@ -257,7 +219,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
             type="text"
             id="jurisdiction"
             name="jurisdiction"
-            value={formData.jurisdiction}
+            value={data.jurisdiction}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={disabled}
@@ -277,7 +239,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
             id="briefDescription"
             name="briefDescription"
             rows={4}
-            value={formData.briefDescription}
+            value={data.briefDescription}
             onChange={handleChange}
             onBlur={handleBlur}
             disabled={disabled}
@@ -293,7 +255,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
           />
           <div className="mt-1 flex items-center justify-between">
             <p id="briefDescription-hint" className="text-xs text-zinc-400">
-              {formData.briefDescription.length}/1000 characters
+              {data.briefDescription.length}/1000 characters
             </p>
             {errors.briefDescription && touched.briefDescription && (
               <p id="briefDescription-error" className="text-sm text-red-600">
@@ -303,7 +265,7 @@ export function IntakeForm({ onSubmit, disabled = false }: IntakeFormProps) {
           </div>
         </div>
       </div>
-    </form>
+    </div>
   )
 }
 
