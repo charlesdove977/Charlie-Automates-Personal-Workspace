@@ -1,6 +1,10 @@
 import { auth } from '@/lib/auth'
 import { redirect } from 'next/navigation'
-import { LogoutButton } from './logout-button'
+import { db } from '@/lib/db'
+import { Sidebar } from '@/components/dashboard/Sidebar'
+import { Header } from '@/components/dashboard/Header'
+
+export const dynamic = 'force-dynamic'
 
 export default async function DashboardLayout({
   children,
@@ -14,31 +18,32 @@ export default async function DashboardLayout({
     redirect('/dashboard/login')
   }
 
-  return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <header className="bg-white shadow-sm">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex h-16 justify-between items-center">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">
-                Case Inbox
-              </h1>
-            </div>
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-gray-600">
-                {session.user.name}
-              </span>
-              <LogoutButton />
-            </div>
-          </div>
-        </div>
-      </header>
+  // Get firm name for sidebar
+  const firm = await db.firm.findUnique({
+    where: { id: session.user.firmId },
+    select: { name: true },
+  })
 
-      {/* Main content */}
-      <main className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        {children}
-      </main>
+  const firmName = firm?.name ?? 'Unknown Firm'
+
+  return (
+    <div className="flex h-screen bg-gray-50">
+      {/* Sidebar */}
+      <Sidebar firmName={firmName} />
+
+      {/* Main content area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Header */}
+        <Header
+          userName={session.user.name ?? 'Unknown'}
+          userRole={session.user.role ?? 'ATTORNEY'}
+        />
+
+        {/* Page content */}
+        <main className="flex-1 overflow-auto p-6">
+          {children}
+        </main>
+      </div>
     </div>
   )
 }
