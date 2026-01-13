@@ -1,11 +1,11 @@
-import { getClaudeClient } from './claude'
+import { getOpenAIClient } from './openai'
 import type {
   CaseBrief,
   DocumentWithText,
   AnalysisMetadata,
 } from '@/types/case-brief'
 
-const MODEL = 'claude-sonnet-4-20250514'
+const MODEL = 'gpt-4o'
 const MAX_TOKENS = 4096
 
 /**
@@ -35,7 +35,7 @@ Use "low" confidence for anything inferred rather than explicitly stated.
 Do not include any text before or after the JSON object.`
 
 /**
- * JSON schema description for Claude to follow
+ * JSON schema description for the model to follow
  */
 const SCHEMA_DESCRIPTION = `
 The output must be a JSON object with this structure:
@@ -66,7 +66,7 @@ The output must be a JSON object with this structure:
 `
 
 /**
- * Maximum text length to send to Claude (approximately 100k tokens worth)
+ * Maximum text length to send to OpenAI (approximately 100k tokens worth)
  */
 const MAX_TEXT_LENGTH = 300000
 
@@ -80,7 +80,7 @@ export async function analyzeCase(
   const startTime = Date.now()
   console.log(`[analysis] Starting case analysis with ${documents.length} documents`)
 
-  const client = getClaudeClient()
+  const client = getOpenAIClient()
 
   // Prepare document text
   let combinedText = documents
@@ -111,14 +111,17 @@ ${combinedText}
 Respond with ONLY the JSON object, no additional text.`
 
   try {
-    console.log(`[analysis] Calling Claude API...`)
+    console.log(`[analysis] Calling OpenAI API...`)
 
-    const response = await client.messages.create({
+    const response = await client.chat.completions.create({
       model: MODEL,
       max_tokens: MAX_TOKENS,
       temperature: 0, // Consistent extraction
-      system: SYSTEM_PROMPT,
       messages: [
+        {
+          role: 'system',
+          content: SYSTEM_PROMPT,
+        },
         {
           role: 'user',
           content: userPrompt,
@@ -127,19 +130,19 @@ Respond with ONLY the JSON object, no additional text.`
     })
 
     const processingTime = Date.now() - startTime
-    console.log(`[analysis] Claude API response received in ${processingTime}ms`)
+    console.log(`[analysis] OpenAI API response received in ${processingTime}ms`)
 
     // Extract text content
-    const textContent = response.content.find((block) => block.type === 'text')
-    if (!textContent || textContent.type !== 'text') {
-      throw new Error('No text content in Claude response')
+    const textContent = response.choices[0]?.message?.content
+    if (!textContent) {
+      throw new Error('No text content in OpenAI response')
     }
 
     // Parse JSON response
     let brief: Omit<CaseBrief, 'analysisMetadata'>
     try {
       // Try to extract JSON from response (handle potential markdown code blocks)
-      let jsonText = textContent.text.trim()
+      let jsonText = textContent.trim()
       if (jsonText.startsWith('```json')) {
         jsonText = jsonText.slice(7)
       }
@@ -153,8 +156,8 @@ Respond with ONLY the JSON object, no additional text.`
 
       brief = JSON.parse(jsonText)
     } catch (parseError) {
-      console.error('[analysis] Failed to parse Claude response as JSON:', parseError)
-      console.error('[analysis] Raw response:', textContent.text.slice(0, 500))
+      console.error('[analysis] Failed to parse OpenAI response as JSON:', parseError)
+      console.error('[analysis] Raw response:', textContent.slice(0, 500))
 
       // Return partial result with error
       return createErrorBrief(
@@ -194,14 +197,14 @@ Respond with ONLY the JSON object, no additional text.`
   } catch (error) {
     const processingTime = Date.now() - startTime
     const message = error instanceof Error ? error.message : 'Unknown error'
-    console.error(`[analysis] Claude API error after ${processingTime}ms:`, message)
+    console.error(`[analysis] OpenAI API error after ${processingTime}ms:`, message)
 
     // Check for specific API errors
-    if (message.includes('rate_limit')) {
-      throw new Error('Claude API rate limit exceeded. Please try again later.')
+    if (message.includes('rate_limit') || message.includes('429')) {
+      throw new Error('OpenAI API rate limit exceeded. Please try again later.')
     }
-    if (message.includes('authentication') || message.includes('api_key')) {
-      throw new Error('Claude API authentication failed. Check ANTHROPIC_API_KEY.')
+    if (message.includes('authentication') || message.includes('api_key') || message.includes('401')) {
+      throw new Error('OpenAI API authentication failed. Check OPENAI_API_KEY.')
     }
 
     throw new Error(`Case analysis failed: ${message}`)
