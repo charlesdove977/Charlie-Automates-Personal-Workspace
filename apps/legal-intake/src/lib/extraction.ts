@@ -1,4 +1,3 @@
-import { PDFParse } from 'pdf-parse'
 import mammoth from 'mammoth'
 import { createClient } from '@supabase/supabase-js'
 
@@ -45,20 +44,16 @@ export async function extractFromPdf(buffer: Buffer): Promise<ExtractionResult> 
   const startTime = Date.now()
   console.log('[extraction] Starting PDF extraction...')
 
-  let parser: PDFParse | null = null
-
   try {
-    // Convert Buffer to Uint8Array for pdf-parse v2
-    const data = new Uint8Array(buffer)
-    parser = new PDFParse({ data })
-
-    const result = await parser.getText()
+    // Dynamic import to avoid build-time test file loading issue
+    const pdfParse = (await import('pdf-parse')).default
+    const data = await pdfParse(buffer)
     const duration = Date.now() - startTime
-    console.log(`[extraction] PDF extraction complete in ${duration}ms, ${result.total} pages`)
+    console.log(`[extraction] PDF extraction complete in ${duration}ms, ${data.numpages} pages`)
 
     return {
-      text: result.text.trim() || null,
-      pageCount: result.total,
+      text: data.text.trim() || null,
+      pageCount: data.numpages,
     }
   } catch (error) {
     const duration = Date.now() - startTime
@@ -76,11 +71,6 @@ export async function extractFromPdf(buffer: Buffer): Promise<ExtractionResult> 
     return {
       text: null,
       error: `Failed to extract PDF text: ${message}`,
-    }
-  } finally {
-    // Clean up parser resources
-    if (parser) {
-      await parser.destroy().catch(() => {})
     }
   }
 }
