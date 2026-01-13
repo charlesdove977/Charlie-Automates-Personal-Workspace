@@ -45,15 +45,16 @@ export async function extractFromPdf(buffer: Buffer): Promise<ExtractionResult> 
   console.log('[extraction] Starting PDF extraction...')
 
   try {
-    // Dynamic import to avoid build-time test file loading issue
-    const pdfParse = (await import('pdf-parse')).default
-    const data = await pdfParse(buffer)
+    const { extractText } = await import('unpdf')
+    const { text, totalPages } = await extractText(buffer)
     const duration = Date.now() - startTime
-    console.log(`[extraction] PDF extraction complete in ${duration}ms, ${data.numpages} pages`)
+    console.log(`[extraction] PDF extraction complete in ${duration}ms, ${totalPages} pages`)
 
+    // unpdf returns text as array of strings (one per page)
+    const fullText = Array.isArray(text) ? text.join('\n') : text
     return {
-      text: data.text.trim() || null,
-      pageCount: data.numpages,
+      text: fullText.trim() || null,
+      pageCount: totalPages,
     }
   } catch (error) {
     const duration = Date.now() - startTime
