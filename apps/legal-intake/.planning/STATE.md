@@ -10,18 +10,18 @@ See: .planning/PROJECT.md (updated 2026-01-12)
 ## Current Position
 
 Phase: 3 of 6 (AI Analysis Engine)
-Plan: 1 of 3 complete
+Plan: 2 of 3 complete
 Status: In progress
-Last activity: 2026-01-13 — Completed 03-01-PLAN.md (Document Text Extraction)
+Last activity: 2026-01-13 — Completed 03-02-PLAN.md (AI Analysis Service)
 
-Progress: █████████░ 57%
+Progress: █████████░ 64%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 8
-- Average duration: 13 min
-- Total execution time: 107 min
+- Total plans completed: 9
+- Average duration: 14 min
+- Total execution time: 122 min
 
 **By Phase:**
 
@@ -29,11 +29,11 @@ Progress: █████████░ 57%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 11 min | 4 min |
 | 02-client-intake | 4 | 74 min | 19 min |
-| 03-ai-analysis | 1 | 22 min | 22 min |
+| 03-ai-analysis | 2 | 37 min | 19 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-02 (12 min), 02-03 (5 min), 02-04 (54 min), 03-01 (22 min)
-- Trend: 03-01 had library issues (pdf-parse → unpdf migration)
+- Last 5 plans: 02-03 (5 min), 02-04 (54 min), 03-01 (22 min), 03-02 (15 min)
+- Trend: 03-02 smooth execution with OpenAI switch
 
 ## Accumulated Context
 
@@ -58,6 +58,9 @@ Recent decisions affecting current work:
 | 02-03 | Legal disclaimer requires checkbox acceptance | Compliance before submission |
 | 03-01 | unpdf instead of pdf-parse | pdf-parse has unfixable test file loading issues |
 | 03-01 | Signed URLs for private storage | Service role key generates temp URLs, docs stay private |
+| 03-02 | OpenAI GPT-4o instead of Claude | Switched mid-implementation for provider preference |
+| 03-02 | Temperature 0 for analysis | Consistent, reproducible fact extraction |
+| 03-02 | Paralegal persona in prompts | Constrains AI to facts only, no legal advice |
 
 ### Deferred Issues
 
@@ -70,6 +73,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-13
-Stopped at: Completed 03-01-PLAN.md (Document Text Extraction)
+Stopped at: Completed 03-02-PLAN.md (AI Analysis Service)
 Resume file: None
-Next: Execute 03-02-PLAN.md (Claude AI Analysis)
+Next: Execute 03-03-PLAN.md (Analysis Pipeline Integration)
