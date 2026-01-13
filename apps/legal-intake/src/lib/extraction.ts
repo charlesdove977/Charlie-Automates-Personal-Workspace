@@ -1,10 +1,41 @@
 import { PDFParse } from 'pdf-parse'
 import mammoth from 'mammoth'
+import { createClient } from '@supabase/supabase-js'
 
 export interface ExtractionResult {
   text: string | null
   error?: string
   pageCount?: number
+}
+
+const STORAGE_BUCKET = 'case-documents'
+
+/**
+ * Create a Supabase client with service role key for storage operations
+ */
+function createStorageClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new Error('Missing Supabase configuration for storage')
+  }
+
+  return createClient(supabaseUrl, serviceRoleKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  })
+}
+
+/**
+ * Extract storage path from a Supabase public URL
+ */
+function extractStoragePath(publicUrl: string): string | null {
+  // URL format: https://xxx.supabase.co/storage/v1/object/public/case-documents/path/to/file
+  const match = publicUrl.match(/\/storage\/v1\/object\/public\/case-documents\/(.+)$/)
+  return match ? match[1] : null
 }
 
 /**
@@ -87,6 +118,7 @@ export async function extractFromDocx(buffer: Buffer): Promise<ExtractionResult>
 
 /**
  * Extract text from a document URL based on its MIME type
+ * Uses signed URLs to access private Supabase storage
  */
 export async function extractTextFromDocument(
   url: string,
@@ -96,8 +128,34 @@ export async function extractTextFromDocument(
   console.log(`[extraction] Fetching document from URL, mimeType: ${mimeType}`)
 
   try {
-    // Fetch document from URL
-    const response = await fetch(url)
+    // Extract storage path from public URL
+    const storagePath = extractStoragePath(url)
+    if (!storagePath) {
+      console.error(`[extraction] Invalid storage URL format: ${url}`)
+      return {
+        text: null,
+        error: 'Invalid storage URL format',
+      }
+    }
+
+    // Create signed URL for private bucket access
+    const supabase = createStorageClient()
+    const { data: signedUrlData, error: signedUrlError } = await supabase.storage
+      .from(STORAGE_BUCKET)
+      .createSignedUrl(storagePath, 60) // 60 seconds expiry
+
+    if (signedUrlError || !signedUrlData?.signedUrl) {
+      console.error(`[extraction] Failed to create signed URL:`, signedUrlError)
+      return {
+        text: null,
+        error: `Failed to create signed URL: ${signedUrlError?.message || 'Unknown error'}`,
+      }
+    }
+
+    console.log(`[extraction] Created signed URL for path: ${storagePath}`)
+
+    // Fetch document using signed URL
+    const response = await fetch(signedUrlData.signedUrl)
 
     if (!response.ok) {
       console.error(`[extraction] Failed to fetch document: ${response.status}`)
