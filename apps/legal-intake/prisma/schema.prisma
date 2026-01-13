@@ -24,6 +24,14 @@ enum CaseStatus {
   REJECTED
 }
 
+enum ProcessingStatus {
+  QUEUED
+  EXTRACTING
+  ANALYZING
+  COMPLETE
+  FAILED
+}
+
 // =============================================================================
 // MODELS
 // =============================================================================
@@ -43,14 +51,15 @@ model Firm {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  role      UserRole @default(ATTORNEY)
-  firmId    String
-  firm      Firm     @relation(fields: [firmId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String?  // Optional for migration; required for login
+  role         UserRole @default(ATTORNEY)
+  firmId       String
+  firm         Firm     @relation(fields: [firmId], references: [id])
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
 
   @@index([firmId])
 }
@@ -73,6 +82,11 @@ model Case {
   // AI analysis results (populated by Phase 3)
   briefJson    Json?
   fitScore     Int?
+
+  // Processing status (populated by Phase 3)
+  processingStatus ProcessingStatus @default(QUEUED)
+  processingError  String?
+  processedAt      DateTime?
 
   // Timestamps
   submittedAt  DateTime   @default(now())
