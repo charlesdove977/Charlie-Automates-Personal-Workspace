@@ -46,7 +46,8 @@ export async function extractFromPdf(buffer: Buffer): Promise<ExtractionResult> 
 
   try {
     const { extractText } = await import('unpdf')
-    const { text, totalPages } = await extractText(buffer)
+    const uint8Array = new Uint8Array(buffer)
+    const { text, totalPages } = await extractText(uint8Array)
     const duration = Date.now() - startTime
     console.log(`[extraction] PDF extraction complete in ${duration}ms, ${totalPages} pages`)
 
