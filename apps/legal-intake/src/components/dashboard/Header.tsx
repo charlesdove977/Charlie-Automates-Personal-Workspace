@@ -1,4 +1,4 @@
-import { LogoutButton } from '@/app/dashboard/logout-button'
+import { LogoutButton } from './LogoutButton'
 
 interface HeaderProps {
   userName: string
