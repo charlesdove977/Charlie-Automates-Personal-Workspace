@@ -5,23 +5,23 @@
 See: .planning/PROJECT.md (updated 2026-01-12)
 
 **Core value:** Attorneys can make informed accept/reject decisions on cases in under 2 minutes without reading raw documents or taking free consults that go nowhere.
-**Current focus:** Phase 2 — Client Intake Interface
+**Current focus:** Phase 3 — AI Analysis Engine
 
 ## Current Position
 
-Phase: 2 of 6 (Client Intake Interface)
-Plan: 4 of 4 complete
-Status: Phase complete
-Last activity: 2026-01-13 — Completed 02-04-PLAN.md (Case Submission API)
+Phase: 3 of 6 (AI Analysis Engine)
+Plan: 1 of 3 complete
+Status: In progress
+Last activity: 2026-01-13 — Completed 03-01-PLAN.md (Document Text Extraction)
 
-Progress: ███████░░░ 50%
+Progress: █████████░ 57%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 7
-- Average duration: 12 min
-- Total execution time: 85 min
+- Total plans completed: 8
+- Average duration: 13 min
+- Total execution time: 107 min
 
 **By Phase:**
 
@@ -29,10 +29,11 @@ Progress: ███████░░░ 50%
 |-------|-------|-------|----------|
 | 01-foundation | 3 | 11 min | 4 min |
 | 02-client-intake | 4 | 74 min | 19 min |
+| 03-ai-analysis | 1 | 22 min | 22 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-01 (3 min), 02-02 (12 min), 02-03 (5 min), 02-04 (54 min)
-- Trend: 02-04 longer due to Supabase setup and manual testing
+- Last 5 plans: 02-02 (12 min), 02-03 (5 min), 02-04 (54 min), 03-01 (22 min)
+- Trend: 03-01 had library issues (pdf-parse → unpdf migration)
 
 ## Accumulated Context
 
@@ -55,6 +56,8 @@ Recent decisions affecting current work:
 | 02-03 | Native form with React state (no form library) | Keep dependencies minimal |
 | 02-03 | 4-step intake flow | Prevents overwhelming users with long single form |
 | 02-03 | Legal disclaimer requires checkbox acceptance | Compliance before submission |
+| 03-01 | unpdf instead of pdf-parse | pdf-parse has unfixable test file loading issues |
+| 03-01 | Signed URLs for private storage | Service role key generates temp URLs, docs stay private |
 
 ### Deferred Issues
 
@@ -67,6 +70,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-13
-Stopped at: Completed Phase 2 (Client Intake Interface) - all 4 plans done
+Stopped at: Completed 03-01-PLAN.md (Document Text Extraction)
 Resume file: None
-Next: Phase 3 (AI Analysis Engine) - plan phase first
+Next: Execute 03-02-PLAN.md (Claude AI Analysis)
