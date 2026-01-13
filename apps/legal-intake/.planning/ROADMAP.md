@@ -16,7 +16,7 @@ None
 
 - [x] **Phase 1: Foundation** - Project setup, tech stack, database schema
 - [x] **Phase 2: Client Intake Interface** - Document upload, questionnaire, disclaimers
-- [ ] **Phase 3: AI Analysis Engine** - Document parsing, case brief generation
+- [x] **Phase 3: AI Analysis Engine** - Document parsing, case brief generation
 - [ ] **Phase 4: Attorney Dashboard** - Auth, inbox, case brief display, accept/reject
 - [ ] **Phase 5: Firm Configuration** - Fit criteria, custom questions, branding
 - [ ] **Phase 6: Embeddable Widget** - Widget version for firm websites
@@ -74,7 +74,7 @@ Key deliverables:
 **Depends on**: Phase 3
 **Research**: Likely (authentication decision)
 **Research topics**: Auth provider options (Clerk/Auth0/NextAuth), session management, role-based access
-**Plans**: TBD
+**Plans**: 4 (04-01 Authentication Setup, 04-02 Dashboard Shell & Case Inbox, 04-03 Case Brief Viewer, 04-04 Accept/Reject Actions)
 
 Key deliverables:
 - Secure authentication system
@@ -119,7 +119,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete | 2026-01-12 |
 | 2. Client Intake Interface | 4/4 | Complete | 2026-01-13 |
-| 3. AI Analysis Engine | 2/3 | In progress | - |
-| 4. Attorney Dashboard | 0/TBD | Not started | - |
+| 3. AI Analysis Engine | 3/3 | Complete | 2026-01-13 |
+| 4. Attorney Dashboard | 0/4 | Planned | - |
 | 5. Firm Configuration | 0/TBD | Not started | - |
 | 6. Embeddable Widget | 0/TBD | Not started | - |
