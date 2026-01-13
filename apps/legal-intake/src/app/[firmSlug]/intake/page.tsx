@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useCallback } from 'react'
+import { useParams } from 'next/navigation'
 import { IntakeForm, type IntakeFormData } from '@/components/intake/IntakeForm'
 import { FileDropzone, type SelectedFile } from '@/components/intake/FileDropzone'
 import { FileList, type FileWithProgress } from '@/components/intake/FileList'
@@ -16,6 +17,8 @@ const STEPS: { id: Step; label: string; number: number }[] = [
 ]
 
 export default function IntakePage() {
+  const params = useParams()
+  const firmSlug = params.firmSlug as string
   const [currentStep, setCurrentStep] = useState<Step>('contact')
   const [formData, setFormData] = useState<IntakeFormData | null>(null)
   const [files, setFiles] = useState<FileWithProgress[]>([])
@@ -48,16 +51,40 @@ export default function IntakePage() {
     setSubmitError(null)
 
     try {
-      // TODO: Implement actual submission in Phase 3
-      // For now, simulate a successful submission
-      await new Promise(resolve => setTimeout(resolve, 1500))
+      // Build FormData for multipart submission
+      const submitData = new FormData()
+      submitData.append('firmSlug', firmSlug)
+      submitData.append('clientName', formData.clientName)
+      submitData.append('clientEmail', formData.clientEmail)
+      submitData.append('clientPhone', formData.clientPhone)
+      submitData.append('caseType', formData.caseType)
+      submitData.append('jurisdiction', formData.jurisdiction)
+      submitData.append('briefDescription', formData.briefDescription)
+
+      // Append files
+      for (const file of files) {
+        submitData.append('files', file.file)
+      }
+
+      const response = await fetch('/api/cases/submit', {
+        method: 'POST',
+        body: submitData,
+      })
+
+      const result = await response.json()
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Submission failed')
+      }
+
       setIsSubmitted(true)
-    } catch {
-      setSubmitError('An error occurred while submitting your intake form. Please try again.')
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An error occurred while submitting your intake form.'
+      setSubmitError(message)
     } finally {
       setIsSubmitting(false)
     }
-  }, [formData, disclaimerAccepted])
+  }, [formData, disclaimerAccepted, firmSlug, files])
 
   const goToStep = useCallback((step: Step) => {
     setCurrentStep(step)
