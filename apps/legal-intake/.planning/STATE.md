@@ -9,19 +9,19 @@ See: .planning/PROJECT.md (updated 2026-01-12)
 
 ## Current Position
 
-Phase: 4 of 6 (Attorney Dashboard) — **PLANNED**
-Plan: 0 of 4 complete
-Status: Ready to execute 04-01-PLAN.md
-Last activity: 2026-01-13 — Created Phase 4 plans (4 plans, 12 tasks)
+Phase: 4 of 6 (Attorney Dashboard) — **In progress**
+Plan: 1 of 4 complete
+Status: Ready to execute 04-02-PLAN.md
+Last activity: 2026-01-13 — Completed 04-01-PLAN.md (Authentication Setup)
 
-Progress: ██████████ 72%
+Progress: ███████████ 76%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 10
+- Total plans completed: 11
 - Average duration: 14 min
-- Total execution time: 142 min
+- Total execution time: 150 min
 
 **By Phase:**
 
@@ -30,10 +30,11 @@ Progress: ██████████ 72%
 | 01-foundation | 3 | 11 min | 4 min |
 | 02-client-intake | 4 | 74 min | 19 min |
 | 03-ai-analysis | 3 | 57 min | 19 min |
+| 04-attorney-dashboard | 1 | 8 min | 8 min |
 
 **Recent Trend:**
-- Last 5 plans: 02-04 (54 min), 03-01 (22 min), 03-02 (15 min), 03-03 (20 min)
-- Trend: Phase 3 complete, AI analysis pipeline fully functional
+- Last 5 plans: 03-01 (22 min), 03-02 (15 min), 03-03 (20 min), 04-01 (8 min)
+- Trend: Phase 4 started, authentication foundation in place
 
 ## Accumulated Context
 
@@ -64,6 +65,8 @@ Recent decisions affecting current work:
 | 03-03 | Fire-and-forget processing on submission | Immediate response to client; serverless-friendly |
 | 03-03 | ProcessingStatus state machine | QUEUED → EXTRACTING → ANALYZING → COMPLETE/FAILED |
 | 03-03 | Basic fit score: 50 baseline | Adjusted by key facts (+10/+5) and red flags (-15/-5) |
+| 04-01 | NextAuth.js v5 for authentication | Free, self-hosted, JWT strategy for serverless |
+| 04-01 | passwordHash field on User model | Secure credential storage with bcryptjs |
 
 ### Deferred Issues
 
@@ -76,6 +79,6 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-01-13
-Stopped at: **Phase 4 Planned** — 4 plans created for Attorney Dashboard
+Stopped at: Completed 04-01-PLAN.md (Authentication Setup)
 Resume file: None
-Next: Execute 04-01-PLAN.md (Authentication Setup)
+Next: Execute 04-02-PLAN.md (Dashboard Shell & Case Inbox)
