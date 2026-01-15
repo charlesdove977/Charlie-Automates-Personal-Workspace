@@ -32,3 +32,8 @@ venv/
 dist/
 build/
 *.log
+
+# Separate repos (tracked independently)
+apps/legal-intake/
+apps/clearlist/
+shared/

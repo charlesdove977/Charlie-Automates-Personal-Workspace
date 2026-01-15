@@ -93,7 +93,11 @@ This keeps each project's planning artifacts isolated without manual folder crea
 │       ├── app-builder-pro.md
 │       ├── content-strategy.md
 │       ├── create-agent.md
+│       ├── debug-agent.md
+│       ├── integration-agent.md
+│       ├── mcp-research.md
 │       ├── rtc.md
+│       ├── test-agent.md
 │       └── thumbnail-packager.md
 │
 ├── agents/                      # Agent frameworks & templates (shared)
@@ -102,7 +106,8 @@ This keeps each project's planning artifacts isolated without manual folder crea
 │   └── README.md
 │
 ├── apps/                        # ALL NEW PROJECTS GO HERE
-│   ├── personal-agi/            # Personal AGI assistant (active)
+│   ├── clearlist/               # ClearList app
+│   ├── legal-intake/            # Legal intake system (active)
 │   │   └── .planning/           # GSD artifacts for this project
 │   │       ├── PROJECT.md
 │   │       ├── ROADMAP.md
@@ -114,24 +119,69 @@ This keeps each project's planning artifacts isolated without manual folder crea
 │   ├── claude-code-short-ideas.md
 │   └── scripts/
 │       ├── done/                # Completed scripts
+│       │   ├── bodybuilding-business-lessons-short.md
+│       │   ├── claude-code-command-center-ferrari.md
 │       │   ├── gsd-plugin-short.md
-│       │   └── personal-agi-short.md
+│       │   ├── linkedin-post-command-center.md
+│       │   ├── personal-agi-short.md
+│       │   ├── ralph-context-management-short.md
+│       │   └── ralph-whim-agent-reel.md
 │       └── not-done/            # Scripts in progress
-│           └── claude-workspace-short.md
+│           └── claude-code-browser-alias-short.md
 │
 ├── shared/                      # Shared resources (synced repo)
 │   ├── README.md
 │   ├── charlie/                 # Charlie-specific resources
-│   └── courses/                 # Course content
-│       ├── claude-code/
-│       │   └── COURSE-OUTLINE.md
-│       └── n8n/
+│   ├── courses/                 # Course content
+│   │   ├── claude-code/
+│   │   │   └── COURSE-OUTLINE.md
+│   │   └── n8n/
+│   ├── leads/                   # Lead tracking files
+│   └── proposals/               # Client proposals
 │
 ├── .gitignore                   # Git ignore rules
 ├── docker-compose.yml           # Local services
 ├── run-n8n-mcp.sh               # Runs n8n MCP via Docker image
 └── .env                         # Secrets (gitignored)
 ```
+
+---
+
+## Lead Management & Documentation
+
+### Working with Lead Files
+
+Lead files live in `shared/leads/` and follow a structured markdown format.
+
+#### Critical Rules
+
+**ALWAYS APPEND to Notes sections** - Never overwrite existing notes or content in lead files. Add new information chronologically with timestamps.
+
+**Proposal Files** - Store in `shared/leads/proposals/[client-name]-[project]-proposal.md`
+
+**Update Lead Files** - When creating proposals or having new interactions, append updates to the lead file's notes/action items section with:
+- Date stamp
+- Summary of interaction
+- Link to proposal (if applicable)
+- Next steps
+
+#### Example Update Pattern
+
+```markdown
+## Notes
+
+### January 13, 2026 - Proposal Sent
+- Created comprehensive proposal for full platform build
+- Two pricing options presented:
+  - Option 1: $5k upfront + 5% net revenue (partnership model)
+  - Option 2: $5k upfront + $500/mo support (build + support model)
+- Proposal location: `shared/leads/proposals/thomas-corr-occupancylift-proposal.md`
+- Next: Awaiting Thomas's response, schedule technical walkthrough
+
+### [Previous notes remain unchanged below]
+```
+
+**Never delete or overwrite existing lead context** - it's historical record that informs future decisions.
 
 ---
 
