@@ -139,6 +139,9 @@ This keeps each project's planning artifacts isolated without manual folder crea
 │   ├── leads/                   # Lead tracking files
 │   └── proposals/               # Client proposals
 │
+├── linkedin/                    # LinkedIn automation & outreach
+│   └── messageconnection.md     # Connection messaging strategy & log
+│
 ├── .gitignore                   # Git ignore rules
 ├── docker-compose.yml           # Local services
 ├── run-n8n-mcp.sh               # Runs n8n MCP via Docker image
@@ -182,6 +185,34 @@ Lead files live in `shared/leads/` and follow a structured markdown format.
 ```
 
 **Never delete or overwrite existing lead context** - it's historical record that informs future decisions.
+
+---
+
+## LinkedIn Outreach Automation
+
+### Overview
+Automated warm outreach via Claude-in-Chrome browser automation. Strategy: DM warm connection → Add value through conversation → Convert through content (no direct pitching).
+
+### Key Files
+- `linkedin/messageconnection.md` — Strategy doc, prospect filtering criteria, opener templates, and outreach log
+
+### Workflow
+1. Open LinkedIn connections page in Chrome
+2. Use `/message-connection` shortcut (or manual browser automation)
+3. Filter prospects using criteria in messageconnection.md
+4. Send personalized opener (2-3 sentences, reference their business, ask open question)
+5. Update log every 5 messages (batch system)
+
+### Chrome Automation Learnings
+- **Tab management**: Always get fresh tab context via `tabs_context_mcp` before starting
+- **Tab detachment**: If a tab detaches during navigation, get fresh context and switch tabs
+- **Compose windows**: Click the specific Message button for each contact; if wrong contact loads, close and retry
+- **Navigation**: Use `navigate` tool with direct URLs rather than back/forward when possible
+- **Rate limiting**: Pace messages naturally to avoid LinkedIn spam detection
+
+### Prospect Filtering (Quick Reference)
+- **Reach out**: Agency/company owners, consultants, founders, AI/automation peers
+- **Skip**: Under 25, employees without influence, teachers, job seekers, vague "visionary" types
 
 ---
 
