@@ -19,6 +19,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Prefers simple, durable systems over clever but fragile setups
 - Values autonomy, ownership, and scalability
 
+**Brand Identity**: Personal. Dynamic. Tenacious.
+
 ### Current Business Focus
 - **AI Automation Agency**: Client work for immediate cashflow
 - **Skool Community**: Building audience and recurring revenue
@@ -66,19 +68,23 @@ Everything built here should:
 
 ### Key Rules
 - **New apps/projects go in `/apps/[project-name]/`** — always
+- **n8n workflow projects go in `/workflows/[project-name]/`** — for automation workflows built with n8n
 - **Each app has its own `.planning/` folder** for GSD artifacts (PROJECT.md, ROADMAP.md, etc.)
 - **`/gsd:new-project` auto-detects workspace roots** — it will prompt for app name and create the folder automatically
 - **Shared resources** (agents, content) live at workspace root
 
 ### When Starting a New Project
 
-Just run `/gsd:new-project` from anywhere in the workspace. If you're at the workspace root (has `apps/` folder), it will:
+Just run `/gsd:new-project` from anywhere in the workspace. If you're at the workspace root, GSD will:
 1. Detect the workspace pattern automatically
-2. Ask you for the new app name
-3. Create `apps/[name]/` and cd into it
-4. Initialize `.planning/` inside the app folder
+2. **Ask whether you're building an app or an n8n workflow**
+3. Ask for the project name
+4. Create the folder in the correct location:
+   - **App** → `apps/[name]/`
+   - **n8n Workflow** → `workflows/[name]/`
+5. Initialize `.planning/` inside the project folder
 
-This keeps each project's planning artifacts isolated without manual folder creation.
+This keeps each project's planning artifacts isolated and routes projects to the correct workspace location automatically.
 
 ### Directory Layout
 
@@ -105,7 +111,7 @@ This keeps each project's planning artifacts isolated without manual folder crea
 │   ├── agent-framework-guide.md
 │   └── README.md
 │
-├── apps/                        # ALL NEW PROJECTS GO HERE
+├── apps/                        # ALL NEW APP PROJECTS GO HERE
 │   ├── clearlist/               # ClearList app
 │   ├── legal-intake/            # Legal intake system (active)
 │   │   └── .planning/           # GSD artifacts for this project
@@ -114,6 +120,10 @@ This keeps each project's planning artifacts isolated without manual folder crea
 │   │       ├── STATE.md
 │   │       └── phases/          # Phase-specific plans
 │   └── [future apps]/
+│
+├── workflows/                   # n8n WORKFLOW PROJECTS GO HERE
+│   └── [workflow-name]/         # Each workflow gets its own folder
+│       └── .planning/           # GSD artifacts for workflow projects
 │
 ├── content/                     # Content strategy & scripts (shared)
 │   ├── claude-code-short-ideas.md
