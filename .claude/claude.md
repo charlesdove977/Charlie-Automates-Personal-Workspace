@@ -142,6 +142,10 @@ This keeps each project's planning artifacts isolated and routes projects to the
 ├── shared/                      # Shared resources (synced repo)
 │   ├── README.md
 │   ├── charlie/                 # Charlie-specific resources
+│   ├── clients/                 # Active client projects (subcontract work)
+│   │   └── Calford.ai/          # Calford.ai partnership
+│   │       └── projects/        # Client project docs
+│   │           └── dealership-crm.md
 │   ├── courses/                 # Course content
 │   │   ├── claude-code/
 │   │   │   └── COURSE-OUTLINE.md
